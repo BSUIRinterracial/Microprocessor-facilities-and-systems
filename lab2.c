@@ -1,4 +1,4 @@
-/* --COPYRIGHT--,BSD_EX
+﻿/* --COPYRIGHT--,BSD_EX
  * Copyright (c) 2012, Texas Instruments Incorporated
  * All rights reserved.
  *
@@ -65,6 +65,7 @@
 //   April 2009
 //   Built with CCSv4 and IAR Embedded Workbench Version: 4.21
 //******************************************************************************
+
 #include <msp430.h>
 
 #define DELTA 6250;
@@ -88,7 +89,7 @@ void main(void) {
 		P1OUT |= BIT7;
 		P2OUT |= BIT2;
 
-		P1DIR |= BIT0;                            // P1.0 output 	LED1
+		P1DIR |= BIT0;                          // P1.0 output 	LED1
 		P1DIR &= ~BIT7;							// P1.7 input   S1
 		P2DIR &= ~BIT2;							// P2.2 input   S2
 
@@ -103,14 +104,13 @@ void main(void) {
 
         TA2CCTL0 = CCIE; // Enable counter interrupt on counter compare register 0
         TA2CTL = TASSEL__SMCLK +ID__2 + MC__CONTINOUS; // Use the SMCLK to clock the counter, SMCLK/8, count up mode 8tick/s
-        //TA2CCR0 = 7999; // Set maximum count (Interrupt frequency 1MH
-
+        
         __bis_SR_register(LPM0_bits + GIE);
 
         __no_operation();
 
         for(;;) { // wait for interrupt
-        }         
+        }
 }
 
 
@@ -129,10 +129,12 @@ __interrupt void Timer_A (void){
 #pragma vector = PORT2_VECTOR
 __interrupt void PORT2_ISR(void){
     if (limit < 7) limit++;
+    P2IFG &= ~BIT2;
 }
 
 
 #pragma vector = PORT1_VECTOR
 __interrupt void PORT1_ISR(void){
     if (limit > 1) limit--;
+    P1IFG &= ~BIT7;
 }
