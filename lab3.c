@@ -88,7 +88,7 @@ int main(void) {
     P2IE |= BIT2;
     ////////////////////////
     // timer setup
-    TA0CCTL0 = CCIE;
+    TA0CCTL0 = CCIE;	// enable compare/capture interrupt
     TA0CTL = TASSEL__ACLK | ID_1 | MC__UP | TACLR;
     TA0CTL &= ~TAIFG;
     TA0CCR0 = 10000;
@@ -104,7 +104,7 @@ int main(void) {
 
 void setFreq (){
     UCSCTL3 |= SELREF__REFOCLK; //set DCO reference = REFo
-    UCSCTL4 |= SELM__DCOCLK; //set ACLK = DCOCLK(was MCLK = DCOCLK)
+    UCSCTL4 |= SELM__DCOCLK | SELA__DCOCLK; //set MCLK and ACLK to DCOCLK
 
     __bis_SR_register(SCG0); // Disable FLL control
 
@@ -133,8 +133,8 @@ __interrupt void PORT2_ISR(void){
         lpmFlag = 1;
         P8OUT |= BIT2;
         P1OUT &= ~BIT0;
-        P2IE |= BIT2; //?ac?aoaai i?a?uaaiey
-        P2IFG &= ~BIT2; // i?enoea oeaaa i?a?uaaiey
+        P2IE |= BIT2;
+        P2IFG &= ~BIT2; 
         __bis_SR_register(LPM0_bits + GIE);
     }
     //P8OUT ^= BIT2;
